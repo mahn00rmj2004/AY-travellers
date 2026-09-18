@@ -23,7 +23,14 @@ export default function TourCard({ image, badge, badgeColor="gold", title, subti
   return (
     <div className="card-hover group bg-white rounded-2xl overflow-hidden shadow-md border border-stone-100/80">
       <div className="relative h-52 overflow-hidden">
-        <Image src={image} alt={title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" unoptimized />
+        <Image 
+          src={image} 
+          alt={title} 
+          fill 
+          className="object-cover transition-transform duration-700 group-hover:scale-110" 
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" 
+          quality={80} 
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
         {badge && <span className={`absolute top-3 left-3 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow ${badgeStyles[badgeColor]}`}>{badge}</span>}
       </div>

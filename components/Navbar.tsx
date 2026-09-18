@@ -3,10 +3,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, ChevronDown } from "lucide-react";
-
+import Image from "next/image";
 const links = [
   { href: "/about", label: "About Us" },
-  { href: "/hajj", label: "Hajj & Umrah" },
+  { href: "/hajj", label: "Umrah" },
   { href: "/international", label: "International" },
   { href: "/domestic", label: "Domestic" },
   { href: "/ticketing", label: "Ticketing" },
@@ -31,15 +31,23 @@ export default function Navbar() {
   const activeClass = transparent ? "text-white" : "text-teal-600";
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${
-      transparent ? "bg-transparent" : "glass bg-cream/95 border-b border-stone-200 shadow-sm"
-    }`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${transparent ? "bg-transparent" : "glass bg-cream/95 border-b border-stone-200 shadow-sm"
+      }`}>
       <div className="max-w-7xl mx-auto px-5 flex items-center justify-between h-[70px]">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
-          <div className="w-[42px] h-[42px] rounded-xl bg-gradient-to-br from-teal-600 to-teal-800 flex items-center justify-center shadow-lg transition-shadow group-hover:shadow-teal-600/40">
-            <span className="font-display font-bold text-white text-[17px]">AY</span>
+          <div className="w-[100px] h-[100px] relative flex-shrink-0">
+            <Image
+              src="/images/logo.png"
+              alt="AY Travel & Tours"
+              fill
+              className="object-contain rounded-xl"
+              priority
+            />
           </div>
+          {/* <div className="w-[42px] h-[42px] rounded-xl bg-gradient-to-br from-teal-600 to-teal-800 flex items-center justify-center shadow-lg transition-shadow group-hover:shadow-teal-600/40">
+            <span className="font-display font-bold text-white text-[17px]">AY</span>
+          </div> */}
           <div className="flex flex-col leading-none">
             <span className={`font-display font-bold text-[16px] transition-colors ${transparent ? "text-white" : "text-[#1E2A2A]"}`}>
               AY Travel & Tours
@@ -72,13 +80,13 @@ export default function Navbar() {
             Sign Up
           </Link>
           <Link href="/contact" className="bg-gold-500 text-[#1E2A2A] text-[13px] font-bold px-5 py-2 rounded-xl hover:bg-gold-300 transition-all shadow-md hover:shadow-gold-400/30">
-            Book Now ✈️
+            Book Now 
           </Link>
         </div>
 
         {/* Hamburger */}
         <button className={`lg:hidden p-2 rounded-lg ${transparent ? "text-white" : "text-[#1E2A2A]"}`} onClick={() => setOpen(!open)}>
-          {open ? <X size={22}/> : <Menu size={22}/>}
+          {open ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
 

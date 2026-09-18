@@ -2,44 +2,135 @@ import Image from "next/image";
 import Link from "next/link";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import TourCard from "@/components/TourCard";
+import { slugify } from "@/lib/slugify";
 
 const regions = [
   {
-    name:"Middle East", emoji:"🌙",
-    tours:[
-      { image:"https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=80&auto=format&fit=crop", badge:"Popular", badgeColor:"gold" as const, title:"Dubai & Abu Dhabi", subtitle:"UAE · 7 Days All-Inclusive", meta:["🏙️ Burj Khalifa","🏨 4-Star","🎡 Desert Safari"], price:"$850" },
-      { image:"https://images.unsplash.com/photo-1539818816354-37c0f85e0621?w=800&q=80&auto=format&fit=crop", badge:"Heritage", badgeColor:"teal" as const, title:"Jordan — Petra & Dead Sea", subtitle:"8 Days Cultural Tour", meta:["🏛️ Petra City","🌊 Dead Sea Float","🏨 4-Star"], price:"$1,100" },
-      { image:"https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=800&q=80&auto=format&fit=crop", badge:"Combo", badgeColor:"dark" as const, title:"Bahrain & Qatar", subtitle:"5 Days Combo Tour", meta:["🏎️ F1 Circuit","🏨 4-Star","🌆 Skyline"], price:"$650" },
+    name: "Southeast Asia", emoji: "🏝️",
+    tours: [
+      {
+        image: "/images/international/m1.jpg",
+        badge: "Culture",
+        badgeColor: "teal" as const,
+        title: "Malaysia",
+        subtitle: "6 Months Multiple Entry Visa",
+        meta: ["🛕 Batu Caves", "🍜 Street Food", "🏨 4-Star"],
+        price: "PKR 19,000"
+      },
+      {
+        image: "/images/international/m2.jpg",
+        badge: "Urgent",
+        badgeColor: "gold" as const,
+        title: "Malaysia",
+        subtitle: "Urgent Processing (72h) Visa",
+        meta: ["🛕 Batu Caves", "🍜 Street Food", "🏨 4-Star"],
+        price: "PKR 35,000"
+      },
+      {
+        image: "/images/international/t1.jpg",
+        badge: "Luxury",
+        badgeColor: "gold" as const,
+        title: "Thailand",
+        subtitle: "2 Months Tourist Visa",
+        meta: ["🤿 Snorkelling", "🏨 5-Star", "🌴 Beaches"],
+        price: "PKR 20,000"
+      },
+      {
+        image: "/images/international/t2.jpg",
+        badge: "Transit",
+        badgeColor: "teal" as const,
+        title: "Thailand",
+        subtitle: "2 Months Transit Visa",
+        meta: ["🤿 Snorkelling", "🏨 5-Star", "🌴 Beaches"],
+        price: "PKR 22,000"
+      },
+      {
+        image: "/images/international/t3.jpg",
+        badge: "Transit",
+        badgeColor: "teal" as const,
+        title: "Thailand",
+        subtitle: "Double Entry Transit Visa",
+        meta: ["🤿 Snorkelling", "🏨 5-Star", "🌴 Beaches"],
+        price: "PKR 35,000"
+      },
+      {
+        image: "/images/international/t4.jpg",
+        badge: "Multiple",
+        badgeColor: "gold" as const,
+        title: "Thailand",
+        subtitle: "Tourist Multiple Entry Visa",
+        meta: ["🤿 Snorkelling", "🏨 5-Star", "🌴 Beaches"],
+        price: "PKR 75,000"
+      },
+      {
+        image: "/images/international/t5.jpg",
+        badge: "Adventure",
+        badgeColor: "teal" as const,
+        title: "Indonesia",
+        subtitle: "90 Days Tourist Visa",
+        meta: ["🌋 Volcanoes", "🛕 Temples", "🏨 4-Star"],
+        price: "PKR 35,000"
+      }
     ]
   },
   {
-    name:"Europe", emoji:"🗺️",
-    tours:[
-      { image:"https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?w=800&q=80&auto=format&fit=crop", badge:"Best Seller", badgeColor:"gold" as const, title:"Turkey & Cappadocia", subtitle:"10 Days · Hot Air Balloon", meta:["🎈 Balloon Ride","🏨 5-Star","🌊 Bosphorus"], price:"$1,200" },
-      { image:"https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80&auto=format&fit=crop", badge:"Group Tour", badgeColor:"teal" as const, title:"Paris, Amsterdam & Brussels", subtitle:"12 Days Escorted Tour", meta:["🗼 Eiffel Tower","🚂 Rail Pass","🏨 4-Star"], price:"$2,400" },
-      { image:"https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80&auto=format&fit=crop", badge:"Premium", badgeColor:"dark" as const, title:"London & Scotland", subtitle:"10 Days · UK Visa Assist", meta:["🎡 London Eye","🏰 Edinburgh","🏨 4-Star"], price:"$2,800" },
+    name: "Central Asia", emoji: "🏛️",
+    tours: [
+      {
+        image: "/images/international/u.jpg",
+        badge: "Heritage",
+        badgeColor: "teal" as const,
+        title: "Uzbekistan",
+        subtitle: "Normal Visa",
+        meta: ["🕌 Registan", "🛒 Bazaars", "🏨 4-Star"],
+        price: "PKR 30,000"
+      },
+      {
+        image: "/images/international/u1.jpg",
+        badge: "Heritage",
+        badgeColor: "teal" as const,
+        title: "Uzbekistan",
+        subtitle: "Urgent Visa",
+        meta: ["🕌 Registan", "🛒 Bazaars", "🏨 4-Star"],
+        price: "PKR 38,000"
+      },
     ]
   },
   {
-    name:"Asia", emoji:"🌏",
-    tours:[
-      { image:"https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&q=80&auto=format&fit=crop", badge:"Honeymoon", badgeColor:"gold" as const, title:"Maldives & Sri Lanka", subtitle:"8 Days · Water Bungalow", meta:["🤿 Snorkelling","🏨 5-Star","🌴 Beaches"], price:"$1,800" },
-      { image:"https://images.unsplash.com/photo-1464817739973-0128fe77aaa1?w=800&q=80&auto=format&fit=crop", badge:"Culture", badgeColor:"teal" as const, title:"Malaysia & Thailand", subtitle:"9 Days Combo", meta:["🛕 Temples","🍜 Street Food","🏨 4-Star"], price:"$1,050" },
-      { image:"https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&q=80&auto=format&fit=crop", badge:"City Break", badgeColor:"dark" as const, title:"Singapore & Kuala Lumpur", subtitle:"7 Days · Gardens by the Bay", meta:["🌃 Night Safari","🏙️ Petronas","🏨 4-Star"], price:"$1,350" },
+    name: "West Asia", emoji: "🕌",
+    tours: [
+      {
+        image: "/images/international/a.jpg",
+        badge: "City Break",
+        badgeColor: "dark" as const,
+        title: "Azerbaijan",
+        subtitle: "Normal Visa",
+        meta: ["🔥 Flame Towers", "🏰 Old City", "🌊 Caspian Sea"],
+        price: "PKR 15,500"
+      },
+      {
+        image: "/images/international/a1.jpg",
+        badge: "City Break",
+        badgeColor: "dark" as const,
+        title: "Azerbaijan",
+        subtitle: "Urgent Visa (5 to 10 hours)",
+        meta: ["🔥 Flame Towers", "🏰 Old City", "🌊 Caspian Sea"],
+        price: "PKR 25,000"
+      },
     ]
-  },
+  }
 ];
 
 export default function InternationalPage() {
   return (
     <>
       <section className="relative h-[60vh] min-h-[450px] flex items-end pb-0">
-        <Image src="https://images.unsplash.com/photo-1488085061387-422e29b40080?w=1600&q=80&auto=format&fit=crop" alt="World Travel" fill className="object-cover" unoptimized/>
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A1A4A] via-blue-900/50 to-transparent"/>
+        <Image src="/images/banners/international.jpg" alt="World Travel" fill className="object-cover" sizes="100vw" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0A1A4A] via-blue-900/50 to-transparent" />
         <div className="relative max-w-7xl mx-auto px-6 w-full pb-16">
           <p className="text-[11px] font-bold text-yellow-300 uppercase tracking-widest mb-3">Around the Globe</p>
           <h1 className="font-display text-5xl lg:text-6xl font-bold text-white leading-tight mb-3">
-            International<br/><span className="italic text-yellow-300">Tour Packages</span>
+            International<br /><span className="italic text-yellow-300">Tour Packages</span>
           </h1>
           <p className="text-white/65 text-[15px] max-w-lg">Visa assistance included. All-inclusive packages across 30+ countries — crafted by experts who've been there.</p>
         </div>
@@ -48,7 +139,7 @@ export default function InternationalPage() {
       {/* Features strip */}
       <div className="bg-[#0A1A4A] py-5 px-6">
         <div className="max-w-7xl mx-auto flex flex-wrap justify-center gap-8">
-          {["✅ Visa Assistance","✈️ Best Airfares","🏨 Handpicked Hotels","🎫 All Inclusive","📞 24/7 Support"].map(f=>(
+          {["✅ Visa Assistance", "✈️ Best Airfares", "🏨 Handpicked Hotels", "🎫 All Inclusive", "📞 24/7 Support"].map(f => (
             <span key={f} className="text-white/70 text-[13px] font-medium">{f}</span>
           ))}
         </div>
@@ -69,8 +160,8 @@ export default function InternationalPage() {
               </AnimateOnScroll>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {region.tours.map((t, i) => (
-                  <AnimateOnScroll key={t.title} delay={i*80}>
-                    <TourCard {...t} />
+                  <AnimateOnScroll key={t.title + t.subtitle + i} delay={i * 80}>
+                    <TourCard {...t} bookHref={`/book/${slugify(t.title, t.subtitle)}`} />
                   </AnimateOnScroll>
                 ))}
               </div>

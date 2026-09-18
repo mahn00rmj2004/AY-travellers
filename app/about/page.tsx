@@ -4,10 +4,10 @@ import AnimateOnScroll from "@/components/AnimateOnScroll";
 import { Shield, Award, Users, Clock, Star, CheckCircle } from "lucide-react";
 
 const team = [
-  { name:"Ahmed Yousuf", role:"CEO & Founder", img:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80&auto=format&fit=crop&face" },
-  { name:"Fatima Rizvi", role:"Head of Hajj & Umrah", img:"https://images.unsplash.com/photo-1494790108755-2616b612b3e5?w=400&q=80&auto=format&fit=crop&face" },
-  { name:"Bilal Khan", role:"International Tours Manager", img:"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80&auto=format&fit=crop&face" },
-  { name:"Sana Mirza", role:"Customer Relations", img:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80&auto=format&fit=crop&face" },
+  { name:"Sheikh Sufyan Abdullah, Zubi ", role:"CEO & Founder", img:"images/aboutus/p4.png" },
+  { name:"Habib ur Rehman ", role:"Head of Hajj & Umrah", img:"images/aboutus/p1.png" },
+  { name:" Anwar Ahmed ", role:"International Tours Manager", img:"images/aboutus/p2.png" },
+  { name:"Saqib Muhammad Afraz", role:"Customer Relations", img:"images/aboutus/p3.png" },
 ];
 
 const values = [
@@ -22,14 +22,14 @@ export default function AboutPage() {
     <>
       {/* Hero */}
       <section className="relative h-[60vh] min-h-[450px] flex items-center">
-        <Image src="https://images.unsplash.com/photo-1488085061387-422e29b40080?w=1600&q=80&auto=format&fit=crop" alt="About AY Travel" fill className="object-cover" unoptimized/>
+        <Image src="/images/banners/aboutus.jpg" alt="About AY Travel" fill className="object-cover" sizes="100vw"/>
         <div className="absolute inset-0 bg-gradient-to-r from-teal-900/85 to-teal-700/50"/>
         <div className="relative max-w-7xl mx-auto px-6 w-full">
           <p className="text-[11px] font-bold text-yellow-300 uppercase tracking-widest mb-3">Our Story</p>
           <h1 className="font-display text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
             Turning Dreams Into<br/><span className="italic text-yellow-300">Unforgettable Journeys</span>
           </h1>
-          <p className="text-white/70 text-[15px] max-w-lg">Founded in 2009, AY Travel & Tours has been Pakistan's most trusted travel partner for over fifteen years.</p>
+          <p className="text-white/70 text-[15px] max-w-lg">At AY Travel & Tours, we don't just book trips — we craft spiritual experiences. As Pakistan's most reliable pilgrimage partner, we ensure every traveler steps into the Haram with complete peace of mind.</p>
         </div>
       </section>
 
@@ -51,7 +51,7 @@ export default function AboutPage() {
             <p className="text-stone-500 text-[15px] leading-relaxed mb-5">AY Travel & Tours was founded in Karachi in 2009 with a simple promise: to make travel accessible, memorable, and stress-free for every Pakistani family. What began as a small team of passionate travel enthusiasts has grown into one of Pakistan's most trusted travel agencies.</p>
             <p className="text-stone-500 text-[15px] leading-relaxed mb-8">Our team has personally visited most destinations we offer — so when we recommend a hotel, a route, or an experience, we do so with genuine knowledge and passion. From sacred Hajj pilgrimages to breathtaking northern Pakistan adventures, every journey we plan carries our personal commitment to excellence.</p>
             <div className="grid grid-cols-2 gap-4">
-              {[["🛡️","ATAB Certified"],["✈️","IATA Accredited"],["🌙","Hajj Specialists"],["💳","Easy Installments"]].map(([icon,label])=>(
+              {[["✈️","IATA Accredited"],["🌙","Umrah Specialists"],["📞","24/7 Support"] , ["📅","Flexible Departures"]].map(([icon,label])=>(
                 <div key={label} className="flex items-center gap-3 bg-teal-50 rounded-xl p-4">
                   <span className="text-xl">{icon}</span>
                   <span className="font-semibold text-[13.5px] text-teal-700">{label}</span>
@@ -61,10 +61,10 @@ export default function AboutPage() {
           </AnimateOnScroll>
           <AnimateOnScroll delay={150}>
             <div className="grid grid-cols-2 gap-3">
-              <Image src="https://images.unsplash.com/photo-1564769662533-4f00a87b4056?w=600&q=80&auto=format&fit=crop" alt="Makkah" width={300} height={350} className="rounded-2xl object-cover w-full h-72 shadow-lg" unoptimized/>
+              <Image src="/images/aboutus/ab1.jpg" alt="Makkah" width={300} height={350} className="rounded-2xl object-cover w-full h-72 shadow-lg" unoptimized/>
               <div className="flex flex-col gap-3 mt-6">
-                <Image src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80&auto=format&fit=crop" alt="Hunza" width={300} height={160} className="rounded-2xl object-cover w-full h-[140px] shadow-lg" unoptimized/>
-                <Image src="https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?w=600&q=80&auto=format&fit=crop" alt="Turkey" width={300} height={160} className="rounded-2xl object-cover w-full h-[140px] shadow-lg" unoptimized/>
+                <Image src="/images/aboutus/ab2.jpg" alt="Skardu" width={300} height={160} className="rounded-2xl object-cover w-full h-[140px] shadow-lg" unoptimized/>
+                <Image src="/images/aboutus/ab3.jpg" alt="airline" width={300} height={160} className="rounded-2xl object-cover w-full h-[140px] shadow-lg" unoptimized/>
               </div>
             </div>
           </AnimateOnScroll>

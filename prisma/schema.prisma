@@ -1,0 +1,423 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ===================================
+// ENUMS
+// ===================================
+enum Role {
+  CLIENT
+  ADMIN
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+// ===================================
+// 1. USERS & AUDIT
+// ===================================
+model User {
+  id            String    @id @default(uuid())
+  name          String?
+  fullName      String    @map("full_name")
+  email         String    @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  passwordHash  String    @map("password_hash")
+  phoneNumber   String?   @unique @map("phone_number")
+  city          String?
+  interest      String?
+  role          Role      @default(CLIENT)
+  isActive      Boolean   @default(true) @map("is_active")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  // Terms & Conditions / Privacy Policy Agreement
+  agreedToTerms Boolean   @default(false) @map("agreed_to_terms")
+  agreedAt      DateTime? @map("agreed_at")
+
+  // Relations
+  bookings                   Booking[]
+  reviews                    Review[]
+  inquiries                  Inquiry[]
+  auditLogs                  AdminAuditLog[]
+  siteContents               SiteContent[]
+  uploadedMedia              MediaGallery[]
+  passwordResetTokens        PasswordResetToken[]
+  accounts                   Account[]
+  umrahCustomizationRequests UmrahCustomizationRequest[]
+
+  @@map("users")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  userId    String    @map("user_id")
+  token     String    @unique
+  expiresAt DateTime  @map("expires_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  usedAt    DateTime? @map("used_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("password_reset_tokens")
+}
+
+model AdminAuditLog {
+  id           String      @id @default(uuid())
+  adminId      String      @map("admin_id")
+  action       AuditAction
+  targetEntity String      @map("target_entity")
+  targetId     String?     @map("target_id")
+  changes      Json?       @map("changes_summary")
+  performedAt  DateTime    @default(now()) @map("performed_at")
+
+  // Relations
+  admin User @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@map("admin_audit_logs")
+}
+
+// ===================================
+// 2. CMS & MEDIA MANAGEMENT
+// ===================================
+model SiteContent {
+  id           String   @id @default(uuid())
+  contentType  String   @map("content_type")
+  title        String?
+  body         String?  @db.Text
+  mediaUrl     String?  @map("media_url")
+  displayOrder Int?     @map("display_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  updatedBy    String   @map("updated_by")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  updater User @relation(fields: [updatedBy], references: [id])
+
+  @@map("site_content")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model MediaGallery {
+  id         String   @id @default(uuid())
+  fileName   String   @map("file_name")
+  fileUrl    String   @map("file_url")
+  fileType   String   @map("file_type")
+  uploadedBy String   @map("uploaded_by")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Relations
+  uploader User @relation(fields: [uploadedBy], references: [id])
+
+  @@map("media_gallery")
+}
+
+// ===================================
+// 3. DESTINATIONS & PACKAGES
+// ===================================
+model Destination {
+  id               String   @id @default(uuid())
+  name             String
+  slug             String   @unique
+  country          String
+  featuredImageUrl String?  @map("featured_image_url")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  packages Package[]
+
+  @@map("destinations")
+}
+
+model Package {
+  id             String   @id @default(uuid())
+  destinationId  String?  @map("destination_id")              // ← optional karo
+
+  // existing fields — do ko optional karo
+  title          String
+  slug           String   @unique
+  pricePerPerson Decimal? @map("price_per_person") @db.Decimal(10, 2)   // ← optional
+  durationDays   Int?     @map("duration_days")                          // ← optional
+  isPublished    Boolean  @default(false) @map("is_published")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  // NEW — page display ke liye
+  subtitle       String?
+  category       String?                                    // "international" | "domestic" | "umrah" | "hajj"
+  region         String?                                    // "Southeast Asia" etc.
+  image          String?
+  badge          String?
+  badgeColor     String?
+  priceDisplay   String?  @map("price_display")             // "PKR 19,000" as-is
+  priceNote      String?  @map("price_note")
+  bookHref       String?  @map("book_href")
+  meta           Json?                                      // string[]
+  details        Json?                                      // category-specific extras
+
+  // relations
+  destination      Destination?     @relation(fields: [destinationId], references: [id], onDelete: SetNull)
+  packageDetails   PackageDetail[]
+  bookings         Booking[]
+  reviews          Review[]
+  revenueSummaries RevenueSummary[]
+  inquiries        Inquiry[]
+
+  @@map("packages")
+}
+
+model PackageDetail {
+  id          String  @id @default(uuid())
+  packageId   String  @map("package_id")
+  dayNumber   Int     @map("day_number")
+  title       String
+  description String  @db.Text
+  detailType  String? @map("detail_type")
+
+  // Relations
+  package Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+  @@map("package_details")
+}
+
+// ===================================
+// 4. BOOKINGS & PAYMENTS
+// ===================================
+model Booking {
+  id               String        @id @default(uuid())
+  userId           String        @map("user_id")
+  packageId        String        @map("package_id")
+  bookingReference String        @unique @map("booking_reference")
+  travelDate       DateTime      @map("travel_date")
+  numberOfGuests   Int           @map("number_of_guests")
+  totalAmount      Decimal       @map("total_amount") @db.Decimal(10, 2)
+  bookingStatus    BookingStatus @default(PENDING) @map("booking_status")
+  contactEmail     String        @map("contact_email")
+  specialRequests  String?       @map("special_requests") @db.Text
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @updatedAt @map("updated_at")
+
+  // Relations
+  user          User           @relation(fields: [userId], references: [id])
+  package       Package        @relation(fields: [packageId], references: [id])
+  payment       Payment?
+  bookingGuests BookingGuest[]
+
+  @@map("bookings")
+}
+
+model BookingGuest {
+  id          String  @id @default(uuid())
+  bookingId   String  @map("booking_id")
+  fullName    String  @map("full_name")
+  email       String?
+  phoneNumber String? @map("phone_number")
+
+  // Relations
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@map("booking_guests")
+}
+
+model Payment {
+  id                   String        @id @default(uuid())
+  bookingId            String        @unique @map("booking_id")
+  amount               Decimal       @db.Decimal(10, 2)
+  paymentStatus        PaymentStatus @default(PENDING) @map("payment_status")
+  transactionReference String        @unique @map("transaction_reference")
+
+  // PayFast specific fields
+  payfastOrderId    String?  @map("payfast_order_id")
+  payfastTrackingId String?  @map("payfast_tracking_id")
+  payfastPaymentId  String?  @map("payfast_payment_id")
+  payfastSignature  String?  @map("payfast_signature") @db.Text
+  payfastResponse   Json?    @map("payfast_response")
+  payfastFee        Decimal? @map("payfast_fee") @db.Decimal(10, 2)
+  verified          Boolean  @default(false) @map("verified")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  booking          Booking           @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  payfastCallbacks PayfastCallback[]
+
+  @@map("payments")
+}
+
+model PayfastCallback {
+  id        String   @id @default(uuid())
+  paymentId String   @map("payment_id")
+  payload   Json     @map("payload")
+  verified  Boolean  @default(false) @map("verified")
+  processed Boolean  @default(false) @map("processed")
+  error     String?  @map("error") @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@index([paymentId])
+  @@index([verified, processed])
+  @@map("payfast_callbacks")
+}
+
+// ===================================
+// 5. REVIEWS, INQUIRIES & ANALYTICS
+// ===================================
+model Review {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  packageId  String   @map("package_id")
+  rating     Int
+  comment    String?  @db.Text
+  isApproved Boolean  @default(false) @map("is_approved")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user    User    @relation(fields: [userId], references: [id])
+  package Package @relation(fields: [packageId], references: [id])
+
+  @@map("reviews")
+}
+
+model Inquiry {
+  id          String   @id @default(uuid())
+  userId      String?  @map("user_id")
+  packageId   String?  @map("package_id")
+  fullName    String   @map("full_name")
+  email       String
+  phoneNumber String   @map("phone_number")
+  subject     String
+  message     String   @db.Text
+  isResolved  Boolean  @default(false) @map("is_resolved")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user    User?    @relation(fields: [userId], references: [id])
+  package Package? @relation(fields: [packageId], references: [id])
+
+  @@map("inquiries")
+}
+
+model FlightInquiry {
+  id         String    @id @default(uuid())
+  name       String
+  email      String?
+  phone      String
+  tripType   String
+  from       String
+  to         String
+  departure  DateTime
+  returnDate DateTime?
+  passengers String
+  classType  String
+  status     String    @default("PENDING")
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@map("flight_inquiries")
+}
+
+model RevenueSummary {
+  id            String   @id @default(uuid())
+  packageId     String   @map("package_id")
+  totalBookings Int      @map("total_bookings")
+  totalRevenue  Decimal  @map("total_revenue") @db.Decimal(12, 2)
+  periodType    String   @map("period_type")
+  periodStart   DateTime @map("period_start")
+  periodEnd     DateTime @map("period_end")
+  generatedAt   DateTime @default(now()) @map("generated_at")
+
+  // Relations
+  package Package @relation(fields: [packageId], references: [id])
+
+  @@map("revenue_summaries")
+}
+
+// ===================================
+// 6. UMRAH CUSTOMIZATION REQUESTS
+// ===================================
+enum UmrahRequestStatus {
+  PENDING
+  CONTACTED
+  QUOTED
+  CONFIRMED
+  CANCELLED
+}
+
+model UmrahCustomizationRequest {
+  id          String             @id @default(uuid())
+  userId      String?            @map("user_id")
+  travelDates String             @map("travel_dates")
+  transport   String
+  hotelCity   String             @map("hotel_city")
+  hotelName   String             @map("hotel_name")
+  airline     String
+  email       String
+  phoneNumber String             @map("phone_number")
+  city        String
+  status      UmrahRequestStatus @default(PENDING)
+  adminNotes  String?            @map("admin_notes") @db.Text
+  createdAt   DateTime           @default(now()) @map("created_at")
+  updatedAt   DateTime           @updatedAt @map("updated_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+  @@map("umrah_customization_requests")
+}
