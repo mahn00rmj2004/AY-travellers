@@ -1,6 +1,7 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../lib/generated/prisma"
+  provider            = "prisma-client-js"
+  output              = "../lib/generated/prisma"
+  importFileExtension = "ts"
 }
 
 datasource db {
@@ -183,30 +184,30 @@ model Destination {
 }
 
 model Package {
-  id             String   @id @default(uuid())
-  destinationId  String?  @map("destination_id")              // ← optional karo
+  id            String  @id @default(uuid())
+  destinationId String? @map("destination_id") // ← optional karo
 
   // existing fields — do ko optional karo
   title          String
   slug           String   @unique
-  pricePerPerson Decimal? @map("price_per_person") @db.Decimal(10, 2)   // ← optional
-  durationDays   Int?     @map("duration_days")                          // ← optional
+  pricePerPerson Decimal? @map("price_per_person") @db.Decimal(10, 2) // ← optional
+  durationDays   Int?     @map("duration_days") // ← optional
   isPublished    Boolean  @default(false) @map("is_published")
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 
   // NEW — page display ke liye
-  subtitle       String?
-  category       String?                                    // "international" | "domestic" | "umrah" | "hajj"
-  region         String?                                    // "Southeast Asia" etc.
-  image          String?
-  badge          String?
-  badgeColor     String?
-  priceDisplay   String?  @map("price_display")             // "PKR 19,000" as-is
-  priceNote      String?  @map("price_note")
-  bookHref       String?  @map("book_href")
-  meta           Json?                                      // string[]
-  details        Json?                                      // category-specific extras
+  subtitle     String?
+  category     String? // "international" | "domestic" | "umrah" | "hajj"
+  region       String? // "Southeast Asia" etc.
+  image        String?
+  badge        String?
+  badgeColor   String?
+  priceDisplay String? @map("price_display") // "PKR 19,000" as-is
+  priceNote    String? @map("price_note")
+  bookHref     String? @map("book_href")
+  meta         Json? // string[]
+  details      Json? // category-specific extras
 
   // relations
   destination      Destination?     @relation(fields: [destinationId], references: [id], onDelete: SetNull)
