@@ -7,5 +7,8 @@ const nextConfig = {
       { protocol: 'https', hostname: 'upload.wikimedia.org' },
     ],
   },
+  // Add this line below:
+  serverExternalPackages: ['@prisma/client', 'prisma'],
 }
+
 module.exports = nextConfig
